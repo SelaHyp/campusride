@@ -16,19 +16,19 @@ const { width, height } = Dimensions.get('window')
 const SLIDES = [
   {
     id: '1',
-    image: require('../../assets/images/onboarding1.png'),
+    image: require('../../../assets/images/onboarding1.png'),
     title: 'Stop Waiting for\nRides',
     subtitle: 'See available campus taxis in real-time.',
   },
   {
     id: '2',
-    image: require('../../assets/images/onboarding2.png'),
+    image: require('../../../assets/images/onboarding2.png'),
     title: 'Book Your Ride\nInstantly',
     subtitle: 'Match with a driver in seconds, right on campus.',
   },
   {
     id: '3',
-    image: require('../../assets/images/onboarding3.png'),
+    image: require('../../../assets/images/onboarding3.png'),
     title: 'Ride Safe,\nArrive Smart',
     subtitle: 'Track your trip live and get to class on time.',
   },
