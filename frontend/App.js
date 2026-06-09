@@ -18,13 +18,18 @@ import DriverRegisterSuccess from './src/screens/auth/DriverRegisterSuccess'
 import StudentHome from './src/screens/student/StudentHome'
 
 // Driver screens
-import DriverHome from './src/screens/driver/DriverHome'
-import ActiveRequests from './src/screens/driver/ActiveRequests'
+import DriverHome       from './src/screens/driver/DriverHome'
+import ActiveRequests   from './src/screens/driver/ActiveRequests'
+import DriverNavigation from './src/screens/driver/DriverNavigation'
 
 const RootNavigator = () => {
   const [screen, setScreen] = useState('splash')
   const { role, setRole, logout } = useAuth()
   const [tempVehicleData, setTempVehicleData] = useState(null)
+  
+  // Global persistence states to remember the selection across screens
+  const [selectedRequestId, setSelectedRequestId] = useState('req_lucy')
+  const [activeTripData, setActiveTripData] = useState(null)
 
   // 1. Splash Screen
   if (screen === 'splash') {
@@ -79,21 +84,18 @@ const RootNavigator = () => {
     )
   }
 
-  // 6. Driver Registration — Stage 1 (Personal Details)
+  // 6. Driver Registration — Stage 1
   if (screen === 'driver-reg-step1') {
     return (
       <DriverRegisterStep1
-        onNext={(personalData) => {
-          // TODO: BACKEND INTEGRATION - Check if email/phone already exists in DB
-          setScreen('driver-reg-step2')
-        }}
+        onNext={(personalData) => setScreen('driver-reg-step2')}
         onBack={()  => setScreen('driver-login')}
         onLogin={() => setScreen('driver-login')}
       />
     )
   }
 
-  // 7. Driver Registration — Stage 2 (Vehicle Information)
+  // 7. Driver Registration — Stage 2
   if (screen === 'driver-reg-step2') {
     return (
       <DriverRegisterStep2
@@ -107,21 +109,18 @@ const RootNavigator = () => {
     )
   }
 
-  // 8. Driver Registration — Stage 3 (Document Uploads Submission)
+  // 8. Driver Registration — Stage 3
   if (screen === 'driver-reg-step3') {
     return (
       <DriverRegisterStep3
-        onSubmit={async (finalStepData) => {
-          // TODO: BACKEND INTEGRATION - Combine tempVehicleData & finalStepData into FormData for multipart upload
-          setScreen('driver-reg-success')
-        }}
+        onSubmit={async (finalStepData) => setScreen('driver-reg-success')}
         onBack={()   => setScreen('driver-reg-step2')}
         onLogin={()  => setScreen('driver-login')}
       />
     )
   }
 
-  // 9. Driver Registration — Stage 4 (Verification Success Screen)
+  // 9. Driver Registration — Stage 4
   if (screen === 'driver-reg-success') {
     return <DriverRegisterSuccess onBackToLogin={() => setScreen('driver-login')} />
   }
@@ -139,7 +138,7 @@ const RootNavigator = () => {
     )
   }
 
-  // 11. Core Portal Dashboard — Forced Driver Mode for Layout Development
+  // 11. Core Portal Dashboard
   if (screen === 'home') {
     const handleLogout = () => {
       logout()
@@ -151,36 +150,43 @@ const RootNavigator = () => {
         onLogout={handleLogout} 
         onViewRequests={() => setScreen('active-requests')}
         onChangeTab={(targetTab) => {
-          // Route driver smoothly to queue screen when clicking 'Trips' tab link indicator
           if (targetTab === 'trips') setScreen('active-requests')
         }}
       />
     )
-
-    /* TODO: Restore split routing once AuthContext sync is ready:
-    if (role === 'driver') {
-      return (
-        <DriverHome 
-          onLogout={handleLogout} 
-          onViewRequests={() => setScreen('active-requests')}
-          onChangeTab={(targetTab) => {
-            if (targetTab === 'trips') setScreen('active-requests')
-          }}
-        />
-      )
-    }
-    return <StudentHome onLogout={handleLogout} />
-    */
   }
 
   // 12. Incoming Ride Requests Dashboard Queue Screen Layout
   if (screen === 'active-requests') {
     return (
       <ActiveRequests 
+        selectedId={selectedRequestId}
+        onSelectId={setSelectedRequestId}
         onBack={() => setScreen('home')} 
+        onAcceptRide={(acceptedPassenger) => {
+          setActiveTripData(acceptedPassenger)
+          setScreen('driver-navigation')
+        }}
         onChangeTab={(targetTab) => {
-          // Route driver cleanly back to home live map when clicking 'Home' tab link indicator
           if (targetTab === 'home') setScreen('home')
+        }}
+      />
+    )
+  }
+
+  // 13. Active Navigation Tracking Overlay Stack View
+  if (screen === 'driver-navigation') {
+    return (
+      <DriverNavigation
+        passenger={activeTripData}
+        onBack={() => setScreen('active-requests')}
+        onArrive={() => {
+          console.log('Driver confirmed arrival for:', activeTripData?.name)
+          setScreen('home') 
+        }}
+        onChangeTab={(targetTab) => {
+          if (targetTab === 'home') setScreen('home')
+          if (targetTab === 'active-requests') setScreen('active-requests')
         }}
       />
     )

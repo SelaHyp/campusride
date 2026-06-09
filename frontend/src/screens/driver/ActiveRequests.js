@@ -12,8 +12,8 @@ import { StatusBar } from 'expo-status-bar'
 
 const { width } = Dimensions.get('window')
 
-const ActiveRequests = ({ onBack, onChangeTab }) => {
-  // 1. Centralized state pool of all incoming requests around Legon campus
+const ActiveRequests = ({ onBack, onChangeTab, onAcceptRide }) => {
+  // TODO: Fetch available campus requests dynamically from endpoints once server is active
   const [allRequests, setAllRequests] = useState([
     {
       id: 'req_lucy',
@@ -50,13 +50,9 @@ const ActiveRequests = ({ onBack, onChangeTab }) => {
     },
   ])
 
-  // 2. Active selection tracker pointing to the spotlighted passenger index ID
   const [selectedId, setSelectedId] = useState('req_lucy')
 
-  // Extract details for the current primary spotlight card view block
   const currentSpotlightRequest = allRequests.find((req) => req.id === selectedId) || allRequests[0]
-
-  // Filter out the active spotlight item to show alternate queues down below
   const lowerQueueRequests = allRequests.filter((req) => req.id !== selectedId)
 
   return (
@@ -80,7 +76,6 @@ const ActiveRequests = ({ onBack, onChangeTab }) => {
         
         {/* 2. PRIMARY SPOTLIGHT REQUEST DETAIL CARD */}
         <View style={styles.mainCard}>
-          {/* Passenger Profile Segment */}
           <View style={styles.profileRow}>
             <View style={styles.avatarMock}>
               <Text style={styles.avatarEmoji}>{currentSpotlightRequest.avatarEmoji}</Text>
@@ -88,12 +83,11 @@ const ActiveRequests = ({ onBack, onChangeTab }) => {
             <View style={styles.profileTextContainer}>
               <Text style={styles.passengerName}>{currentSpotlightRequest.name}</Text>
               <Text style={styles.passengerMeta}>
-                ⭐ {currentSpotlightRequest.rating}  •  {currentSpotlightRequest.type}
+                ⭐ {currentSpotlightRequest.rating} • {currentSpotlightRequest.type}
               </Text>
             </View>
           </View>
 
-          {/* Timeline Route Node Tracking Vector Indicator Layout */}
           <View style={styles.routeTimelineContainer}>
             <View style={styles.timelineIndicatorsColumn}>
               <View style={[styles.timelineDot, styles.blueDot]} />
@@ -113,7 +107,6 @@ const ActiveRequests = ({ onBack, onChangeTab }) => {
             </View>
           </View>
 
-          {/* Metric Estimations Quick Panels */}
           <View style={styles.metricsRow}>
             <View style={styles.metricCard}>
               <Text style={styles.metricLabel}>Distance</Text>
@@ -125,8 +118,11 @@ const ActiveRequests = ({ onBack, onChangeTab }) => {
             </View>
           </View>
 
-          {/* Action Trigger Interactive Layout Buttons */}
-          <TouchableOpacity style={styles.acceptButton} activeOpacity={0.85}>
+          <TouchableOpacity 
+            style={styles.acceptButton} 
+            activeOpacity={0.85}
+            onPress={() => onAcceptRide(currentSpotlightRequest)}
+          >
             <Text style={styles.acceptButtonText}>Accept Ride</Text>
           </TouchableOpacity>
 
@@ -151,12 +147,10 @@ const ActiveRequests = ({ onBack, onChangeTab }) => {
           {lowerQueueRequests.map((item) => (
             <View key={item.id} style={styles.horizontalMiniCard}>
               <View style={styles.miniCardRouteContainer}>
-                {/* 📍 Current Location Icon for Pickup */}
                 <View style={styles.miniRouteLineRow}>
                   <Text style={styles.miniMapIcon}>📍</Text>
                   <Text style={styles.miniMapPlaceText} numberOfLines={1}>{item.pickup}</Text>
                 </View>
-                {/* 🏁 Chequered Flag Icon for Destination */}
                 <View style={styles.miniRouteLineRow}>
                   <Text style={styles.miniMapIcon}>🏁</Text>
                   <Text style={styles.miniMapPlaceText} numberOfLines={1}>{item.destination}</Text>
@@ -165,7 +159,6 @@ const ActiveRequests = ({ onBack, onChangeTab }) => {
               
               <View style={styles.miniCardFooterRow}>
                 <Text style={styles.miniCardDistanceText}>{item.distance}</Text>
-                {/* Tapping this views and promotes the selected data block directly to spotlight card above */}
                 <TouchableOpacity 
                   style={styles.miniCardViewButton} 
                   activeOpacity={0.8}
@@ -206,6 +199,7 @@ const ActiveRequests = ({ onBack, onChangeTab }) => {
 export default ActiveRequests
 
 const styles = StyleSheet.create({
+  // Global View Layout Canvas
   container: {
     flex: 1,
     backgroundColor: '#F3F4F6',
@@ -213,6 +207,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 24,
   },
+
+  // 1. App Bar Header Layout
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -251,6 +247,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#3B82F6',
   },
+
+  // 2. Primary Spotlight Card Structure
   mainCard: {
     backgroundColor: '#FFFFFF',
     marginHorizontal: 20,
@@ -293,6 +291,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#6B7280',
   },
+
+  // Timeline Routing Vector Indicator
   routeTimelineContainer: {
     flexDirection: 'row',
     marginBottom: 24,
@@ -347,6 +347,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1F2937',
   },
+
+  // Spotlight Metrics Row
   metricsRow: {
     flexDirection: 'row',
     gap: 12,
@@ -370,6 +372,8 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#1F2937',
   },
+
+  // Primary Action Controls
   acceptButton: {
     backgroundColor: '#84CC16',
     height: 52,
@@ -400,6 +404,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
+
+  // 3. Horizontal Bottom Queue Section
   otherSectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -423,7 +429,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   horizontalMiniCard: {
-    backgroundColor: '#D1D5DB', 
+    backgroundColor: '#D1D5DB',
     width: width * 0.46,
     borderRadius: 14,
     padding: 14,
@@ -469,6 +475,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1E3A8A',
   },
+
+  // 4. Base Tab Menu Layout Configuration
   tabBarContainer: {
     flexDirection: 'row',
     height: 74,
