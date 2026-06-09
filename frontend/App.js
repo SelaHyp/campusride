@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { AuthProvider, useAuth } from './src/context/AuthContext'
 
 // Auth screens
@@ -21,27 +22,20 @@ import DriverHome from './src/screens/driver/DriverHome'
 
 const RootNavigator = () => {
   const [screen, setScreen] = useState('splash')
-  const { role, logout }    = useAuth()
+  const { role, setRole, logout } = useAuth()
+  const [tempVehicleData, setTempVehicleData] = useState(null)
 
-  // 1. Splash
+  // 1. Splash Screen
   if (screen === 'splash') {
-    return (
-      <SplashScreen
-        onFinish={() => setScreen('onboarding')}
-      />
-    )
+    return <SplashScreen onFinish={() => setScreen('onboarding')} />
   }
 
-  // 2. Onboarding
+  // 2. Onboarding Screen
   if (screen === 'onboarding') {
-    return (
-      <Onboarding
-        onFinish={() => setScreen('role-selection')}
-      />
-    )
+    return <Onboarding onFinish={() => setScreen('role-selection')} />
   }
 
-  // 3. Role Selection
+  // 3. Role Selection Screen
   if (screen === 'role-selection') {
     return (
       <RoleSelection
@@ -51,23 +45,32 @@ const RootNavigator = () => {
     )
   }
 
-  // 4. Student Login
+  // 4. Student Login Screen
   if (screen === 'student-login') {
     return (
       <StudentLogin
-        onStudentLogin={()  => setScreen('home')}
+        onStudentLogin={() => {
+          if (setRole) setRole('student')
+          setScreen('home')
+        }}
         onCreateAccount={() => setScreen('signup')}
-        onGoogleLogin={()   => setScreen('home')}
-        onBack={()          => setScreen('role-selection')}
+        onGoogleLogin={() => {
+          if (setRole) setRole('student')
+          setScreen('home')
+        }}
+        onBack={() => setScreen('role-selection')}
       />
     )
   }
 
-  // 5. Driver Login
+  // 5. Driver Login Screen
   if (screen === 'driver-login') {
     return (
       <DriverLogin
-        onDriverLogin={()    => setScreen('home')}
+        onDriverLogin={() => {
+          if (setRole) setRole('driver')
+          setScreen('home')
+        }}
         onDriverRegister={() => setScreen('driver-reg-step1')}
         onSupport={()        => console.log('Support clicked')}
         onBack={()           => setScreen('role-selection')}
@@ -80,11 +83,7 @@ const RootNavigator = () => {
     return (
       <DriverRegisterStep1
         onNext={(personalData) => {
-          // TODO: BACKEND INTEGRATION
-          // Optional: You can make an API call here to check if the email/phone already exists 
-          // before letting the driver move to step 2.
-          // Example: await api.post('/auth/check-exists', { email: personalData.email })
-          
+          // TODO: BACKEND INTEGRATION - Check if email/phone already exists in DB
           setScreen('driver-reg-step2')
         }}
         onBack={()  => setScreen('driver-login')}
@@ -93,13 +92,12 @@ const RootNavigator = () => {
     )
   }
 
-  // 7. Driver Registration — Stage 2 (Vehicle Info & Step 2 Docs)
+  // 7. Driver Registration — Stage 2 (Vehicle Information)
   if (screen === 'driver-reg-step2') {
     return (
       <DriverRegisterStep2
-        onNext={(vehicleAndDocData) => {
-          // This receives: vehicleType, licensePlate, vehicleColor, seats, driversLicense, nationalId
-          // We pass this data forward to step 3 so everything can be submitted together.
+        onNext={(vehicleData) => {
+          setTempVehicleData(vehicleData)
           setScreen('driver-reg-step3')
         }}
         onBack={()  => setScreen('driver-reg-step1')}
@@ -108,42 +106,12 @@ const RootNavigator = () => {
     )
   }
 
-  // 8. Driver Registration — Stage 3 (Final Document Uploads & Complete Submission)
+  // 8. Driver Registration — Stage 3 (Document Uploads Submission)
   if (screen === 'driver-reg-step3') {
     return (
       <DriverRegisterStep3
         onSubmit={async (finalStepData) => {
-          /* TODO: BACKEND INTEGRATION
-            When backend is ready, this is where you collect ALL data from the registration flow 
-            and send it to your server using multipart/form-data (since it includes files).
-
-            Example implementation:
-            try {
-              const formData = new FormData()
-              
-              // Text Fields
-              formData.append('ghanaCardNumber', finalStepData.nationalIdNumber)
-              
-              // Image/Document Files
-              formData.append('insuranceDoc', { uri: finalStepData.insuranceFile, name: 'insurance.pdf', type: 'application/pdf' })
-              formData.append('licenseDoc', { uri: finalStepData.licenseFile, name: 'license.pdf', type: 'application/pdf' })
-              formData.append('registrationDoc', { uri: finalStepData.registrationFile, name: 'registration.pdf', type: 'application/pdf' })
-              formData.append('ghanaCardFront', { uri: finalStepData.ghanaCardFront, name: 'front.jpg', type: 'image/jpeg' })
-              formData.append('ghanaCardBack', { uri: finalStepData.ghanaCardBack, name: 'back.jpg', type: 'image/jpeg' })
-
-              const res = await api.post('/drivers/register', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-              })
-
-              if (res.status === 201) {
-                setScreen('driver-reg-success')
-              }
-            } catch (err) {
-              console.error("Registration submission failed:", err)
-            }
-          */
-
-          // Temporary mock transition until the pipeline above is live:
+          // TODO: BACKEND INTEGRATION - Combine tempVehicleData & finalStepData into FormData for multipart upload
           setScreen('driver-reg-success')
         }}
         onBack={()   => setScreen('driver-reg-step2')}
@@ -152,37 +120,40 @@ const RootNavigator = () => {
     )
   }
 
-  // 9. Driver Registration — Stage 4 (Verification Pending Status)
+  // 9. Driver Registration — Stage 4 (Verification Success Screen)
   if (screen === 'driver-reg-success') {
-    return (
-      <DriverRegisterSuccess
-        onBackToLogin={() => setScreen('driver-login')}
-      />
-    )
+    return <DriverRegisterSuccess onBackToLogin={() => setScreen('driver-login')} />
   }
 
-  // 10. Signup (Shared / Guest track)
+  // 10. Shared Signup Screen
   if (screen === 'signup') {
     return (
       <SignupScreen
-        onDone={()   => setScreen('home')}
+        onDone={() => {
+          if (setRole) setRole('student')
+          setScreen('home')
+        }}
         onSignIn={() => setScreen('student-login')}
       />
     )
   }
 
-  // 11. Home — role-based routing
+  // 11. Core Portal Dashboard — Forced Driver Mode for Layout Development
   if (screen === 'home') {
     const handleLogout = () => {
       logout()
       setScreen('role-selection')
     }
 
+    // Serving your premium map dashboard screen layout directly
+    return <DriverHome onLogout={handleLogout} />
+
+    /* TODO: Restore split routing once AuthContext sync is ready:
     if (role === 'driver') {
       return <DriverHome onLogout={handleLogout} />
     }
-
     return <StudentHome onLogout={handleLogout} />
+    */
   }
 
   return null
@@ -190,8 +161,10 @@ const RootNavigator = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <RootNavigator />
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
+    </SafeAreaProvider>
   )
 }
