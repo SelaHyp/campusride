@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
+import { MaterialCommunityIcons } from '@expo/vector-icons' // 🌟 IMPORTED NATIVE PLUGIN VECTOR ICONS
 
 const { width } = Dimensions.get('window')
 
@@ -62,7 +63,7 @@ const ActiveRequests = ({ onBack, onChangeTab, onAcceptRide }) => {
       {/* 1. HEADER APP BAR */}
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack} activeOpacity={0.7} style={styles.backButton}>
-          <Text style={styles.backArrowIcon}>←</Text>
+          <MaterialCommunityIcons name="arrow-left" size={24} color="#1E3A8A" />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitleText}>Active Requests</Text>
@@ -83,16 +84,16 @@ const ActiveRequests = ({ onBack, onChangeTab, onAcceptRide }) => {
             <View style={styles.profileTextContainer}>
               <Text style={styles.passengerName}>{currentSpotlightRequest.name}</Text>
               <Text style={styles.passengerMeta}>
-                ⭐ {currentSpotlightRequest.rating} • {currentSpotlightRequest.type}
+                <MaterialCommunityIcons name="star" size={14} color="#EAB308" /> {currentSpotlightRequest.rating} • {currentSpotlightRequest.type}
               </Text>
             </View>
           </View>
 
           <View style={styles.routeTimelineContainer}>
             <View style={styles.timelineIndicatorsColumn}>
-              <View style={[styles.timelineDot, styles.blueDot]} />
+              <MaterialCommunityIcons name="circle-slice-8" size={14} color="#3B82F6" />
               <View style={styles.timelineLineConnector} />
-              <View style={[styles.timelineDot, styles.greenDot]} />
+              <MaterialCommunityIcons name="map-marker" size={16} color="#84CC16" />
             </View>
             
             <View style={styles.routeAddressesColumn}>
@@ -148,11 +149,11 @@ const ActiveRequests = ({ onBack, onChangeTab, onAcceptRide }) => {
             <View key={item.id} style={styles.horizontalMiniCard}>
               <View style={styles.miniCardRouteContainer}>
                 <View style={styles.miniRouteLineRow}>
-                  <Text style={styles.miniMapIcon}>📍</Text>
+                  <MaterialCommunityIcons name="map-marker-outline" size={14} color="#1F2937" />
                   <Text style={styles.miniMapPlaceText} numberOfLines={1}>{item.pickup}</Text>
                 </View>
                 <View style={styles.miniRouteLineRow}>
-                  <Text style={styles.miniMapIcon}>🏁</Text>
+                  <MaterialCommunityIcons name="flag-checkered" size={14} color="#1F2937" />
                   <Text style={styles.miniMapPlaceText} numberOfLines={1}>{item.destination}</Text>
                 </View>
               </View>
@@ -173,30 +174,35 @@ const ActiveRequests = ({ onBack, onChangeTab, onAcceptRide }) => {
 
       </ScrollView>
 
-      {/* 4. BASE SYSTEM TAB NAV BAR COMPONENT */}
+      {/* 🌟 4. APP BASE SYSTEM TAB NAV BAR (Perfectly Synced directly to DriverHome Style Schema) */}
       <View style={styles.tabBarContainer}>
-        <TouchableOpacity style={styles.tabItem} onPress={() => onChangeTab('home')} activeOpacity={0.7}>
-          <Text style={styles.tabIconInactive}>🏠</Text>
-          <Text style={styles.tabLabelInactive}>Home</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tabItem} onPress={() => onChangeTab('trips')} activeOpacity={0.7}>
-          <View style={styles.activeTabIconBackground}>
-            <Text style={styles.tabIconActive}>🔀</Text>
+        {/* Home Tab */}
+        <TouchableOpacity style={styles.tabItem} onPress={() => onChangeTab && onChangeTab('home')} activeOpacity={0.7}>
+          <View style={styles.tabIconBackground}>
+            <MaterialCommunityIcons name="home-outline" size={24} color="#94A3B8" />
           </View>
-          <Text style={styles.tabLabelActive}>Trips</Text>
+          <Text style={styles.tabLabelText}>Home</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.tabItem} onPress={() => console.log('Profile')} activeOpacity={0.7}>
-          <Text style={styles.tabIconInactive}>👤</Text>
-          <Text style={styles.tabLabelInactive}>Profile</Text>
+        {/* Trips Tab (Active Highlight state capsule layer applied cleanly) */}
+        <TouchableOpacity style={styles.tabItem} onPress={() => onChangeTab && onChangeTab('trips')} activeOpacity={0.7}>
+          <View style={[styles.tabIconBackground, styles.activeTabIconBackground]}>
+            <MaterialCommunityIcons name="car-multiple" size={24} color="#1E3A8A" />
+          </View>
+          <Text style={[styles.tabLabelText, styles.activeTabLabelText]}>Trips</Text>
+        </TouchableOpacity>
+
+        {/* Profile Tab */}
+        <TouchableOpacity style={styles.tabItem} onPress={() => onChangeTab && onChangeTab('profile')} activeOpacity={0.7}>
+          <View style={styles.tabIconBackground}>
+            <MaterialCommunityIcons name="account-circle-outline" size={24} color="#94A3B8" />
+          </View>
+          <Text style={styles.tabLabelText}>Profile</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   )
 }
-
-export default ActiveRequests
 
 const styles = StyleSheet.create({
   // Global View Layout Canvas
@@ -219,11 +225,6 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 4,
-  },
-  backArrowIcon: {
-    fontSize: 24,
-    color: '#1E3A8A',
-    fontWeight: '700',
   },
   headerTitleContainer: {
     flex: 1,
@@ -300,26 +301,8 @@ const styles = StyleSheet.create({
   timelineIndicatorsColumn: {
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 4,
     width: 20,
-  },
-  timelineDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  blueDot: {
-    backgroundColor: '#3B82F6',
-  },
-  greenDot: {
-    backgroundColor: '#84CC16',
   },
   timelineLineConnector: {
     flex: 1,
@@ -444,9 +427,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
-  miniMapIcon: {
-    fontSize: 12,
-  },
   miniMapPlaceText: {
     fontSize: 13,
     fontWeight: '700',
@@ -476,41 +456,40 @@ const styles = StyleSheet.create({
     color: '#1E3A8A',
   },
 
-  // 4. Base Tab Menu Layout Configuration
+  // 🌟 SYNCHRONIZED APP FOOTER BOTTOM NAV STYLES (Copied perfectly from DriverHome.js)
   tabBarContainer: {
     flexDirection: 'row',
     height: 74,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
+    borderTopColor: '#F1F5F9',
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  activeTabIconBackground: {
-    backgroundColor: '#EFF6FF',
+  tabIconBackground: {
     paddingHorizontal: 20,
     paddingVertical: 4,
     borderRadius: 16,
     marginBottom: 2,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  tabIconActive: {
-    fontSize: 18,
+  activeTabIconBackground: {
+    backgroundColor: '#EFF6FF',
   },
-  tabLabelActive: {
-    fontSize: 11,
-    color: '#1E3A8A',
-    fontWeight: '700',
-  },
-  tabIconInactive: {
-    fontSize: 18,
-    opacity: 0.4,
-  },
-  tabLabelInactive: {
+  tabLabelText: {
     fontSize: 11,
     fontWeight: '500',
     color: '#94A3B8',
   },
+  activeTabLabelText: {
+    color: '#1E3A8A',
+    fontWeight: '700',
+  },
 })
+
+export default ActiveRequests
