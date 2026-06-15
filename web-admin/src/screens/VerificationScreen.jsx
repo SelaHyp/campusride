@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { 
   Car, 
   Mail, 
@@ -9,56 +9,173 @@ import {
 } from 'lucide-react'
 
 export default function DriverVerificationScreen() {
-  const driversData = [
+  // Application Queue Registry State Framework
+  const [driversData, setDriversData] = useState([
     {
       id: 1,
       name: 'Kwame Evans Mensah',
-      email: 'k.e.mensah@st.ug.edu.gh',
+      email: 'kwame.evans.m@gmail.com',
       vehicle: 'Hyundai Elantra',
       color: 'Midnight Grey',
       license: 'GW-4022-24',
       date: 'Oct 24, 2026',
       status: 'PENDING',
-      type: 'Undergraduate Student • Computer Science',
       phone: '+233 24 412 3456',
       residence: 'Madina',
       initials: 'KM',
-      documents: ["Driver's License", 'Ghana Card', 'Insurance', 'Car Registration']
+      documents: [
+        { name: "Driver's License", url: "https://api.campusride.com/v1/docs/license-km.pdf" },
+        { name: 'Ghana Card', url: "https://api.campusride.com/v1/docs/ghana-card-km.pdf" },
+        { name: 'Insurance', url: "https://api.campusride.com/v1/docs/insurance-km.pdf" },
+        { name: 'Car Registration', url: "https://api.campusride.com/v1/docs/registration-km.pdf" }
+      ]
     },
     {
       id: 2,
       name: 'Emmanuel Kofi Boateng', 
-      email: 'ekboateng001@st.ug.edu.gh',
+      email: 'ekboateng001@gmail.com',
       vehicle: 'Toyota Vitz',
       color: 'Blue',
       license: 'GE-8829-25',
       date: 'Oct 23, 2026',
       status: 'IN REVIEW',
-      type: 'Graduate Student • Business School',
       phone: '+233 55 912 3456',
       residence: 'East Legon',
       initials: 'EB',
       image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80',
-      documents: ["Driver's License", 'Ghana Card', 'Insurance', 'Car Registration']
+      documents: [
+        { name: "Driver's License", url: "https://api.campusride.com/v1/docs/license-eb.pdf" },
+        { name: 'Ghana Card', url: "https://api.campusride.com/v1/docs/ghana-card-eb.pdf" },
+        { name: 'Insurance', url: "https://api.campusride.com/v1/docs/insurance-eb.pdf" },
+        { name: 'Car Registration', url: "https://api.campusride.com/v1/docs/registration-eb.pdf" }
+      ]
     },
     {
       id: 3,
       name: 'Samuel Yaw Addo',
-      email: 'syaddo@st.ug.edu.gh',
+      email: 'syaddo99@gmail.com',
       vehicle: 'Kia Picanto',
       color: 'Silver',
       license: 'GR-4510-23',
       date: 'Oct 22, 2026',
       status: 'PENDING',
-      type: 'Undergraduate Student • Economics',
       phone: '+233 27 711 0923',
       residence: 'West Legon',
       initials: 'SA',
-      documents: ["Driver's License", 'Ghana Card', 'Insurance', 'Car Registration']
+      documents: [
+        { name: "Driver's License", url: "https://api.campusride.com/v1/docs/license-sa.pdf" },
+        { name: 'Ghana Card', url: "https://api.campusride.com/v1/docs/ghana-card-sa.pdf" },
+        { name: 'Insurance', url: "https://api.campusride.com/v1/docs/insurance-sa.pdf" },
+        { name: 'Car Registration', url: "https://api.campusride.com/v1/docs/registration-sa.pdf" }
+      ]
+    },
+    {
+      id: 4,
+      name: 'Abena Mansa Osei',
+      email: 'abena.m.osei@gmail.com',
+      vehicle: 'Honda Civic',
+      color: 'Black',
+      license: 'GW-1105-25',
+      date: 'Oct 22, 2026',
+      status: 'PENDING',
+      phone: '+233 20 883 1294',
+      residence: 'Adenta',
+      initials: 'AO',
+      documents: [
+        { name: "Driver's License", url: "https://api.campusride.com/v1/docs/license-ao.pdf" },
+        { name: 'Ghana Card', url: "https://api.campusride.com/v1/docs/ghana-card-ao.pdf" },
+        { name: 'Insurance', url: "https://api.campusride.com/v1/docs/insurance-ao.pdf" },
+        { name: 'Car Registration', url: "https://api.campusride.com/v1/docs/registration-ao.pdf" }
+      ]
+    },
+    {
+      id: 5,
+      name: 'Kofi Owusu Ansah',
+      email: 'kofiansah.dev@gmail.com',
+      vehicle: 'Toyota Corolla',
+      color: 'White',
+      license: 'GX-9043-24',
+      date: 'Oct 21, 2026',
+      status: 'IN REVIEW',
+      phone: '+233 24 339 0184',
+      residence: 'Airport Residential',
+      initials: 'KA',
+      documents: [
+        { name: "Driver's License", url: "https://api.campusride.com/v1/docs/license-ka.pdf" },
+        { name: 'Ghana Card', url: "https://api.campusride.com/v1/docs/ghana-card-ka.pdf" },
+        { name: 'Insurance', url: "https://api.campusride.com/v1/docs/insurance-ka.pdf" },
+        { name: 'Car Registration', url: "https://api.campusride.com/v1/docs/registration-ka.pdf" }
+      ]
+    },
+    {
+      id: 6,
+      name: 'Ekow Kobina Mensah',
+      email: 'ekowkobina@gmail.com',
+      vehicle: 'Mazda 3',
+      color: 'Red',
+      license: 'CR-5521-26',
+      date: 'Oct 20, 2026',
+      status: 'PENDING',
+      phone: '+233 50 112 9054',
+      residence: 'Tema Community 11',
+      initials: 'EM',
+      documents: [
+        { name: "Driver's License", url: "https://api.campusride.com/v1/docs/license-em.pdf" },
+        { name: 'Ghana Card', url: "https://api.campusride.com/v1/docs/ghana-card-em.pdf" },
+        { name: 'Insurance', url: "https://api.campusride.com/v1/docs/insurance-em.pdf" },
+        { name: 'Car Registration', url: "https://api.campusride.com/v1/docs/registration-em.pdf" }
+      ]
+    },
+    {
+      id: 7,
+      name: 'Naa Ameley Tagoe',
+      email: 'naatagoe96@gmail.com',
+      vehicle: 'Nissan Versa',
+      color: 'Dark Blue',
+      license: 'GE-3091-24',
+      date: 'Oct 20, 2026',
+      status: 'PENDING',
+      phone: '+233 26 445 0912',
+      residence: 'Osu',
+      initials: 'NT',
+      documents: [
+        { name: "Driver's License", url: "https://api.campusride.com/v1/docs/license-nt.pdf" },
+        { name: 'Ghana Card', url: "https://api.campusride.com/v1/docs/ghana-card-nt.pdf" },
+        { name: 'Insurance', url: "https://api.campusride.com/v1/docs/insurance-nt.pdf" },
+        { name: 'Car Registration', url: "https://api.campusride.com/v1/docs/registration-nt.pdf" }
+      ]
     }
-  ]
+  ])
 
   const [selectedDriver, setSelectedDriver] = useState(driversData[2])
+
+  useEffect(() => {
+    // 💡 BACKEND TODO:
+    // Make an HTTP GET request to fetch verification applications
+    // Endpoint: `GET /api/v1/admin/drivers/verifications?status=pending,in-review`
+    // Action: setDriversData(apiResponse.data.drivers) and setSelectedDriver(apiResponse.data.drivers[0])
+  }, [])
+
+  const handleApplicationStatus = (driverId, decision) => {
+    // 💡 BACKEND TODO:
+    // Make an HTTP PATCH request to update driver verification state
+    // Endpoint: `PATCH /api/v1/admin/drivers/verifications/${driverId}/review`
+    // Headers: { "Authorization": "Bearer <admin_token>" }
+    // Body Payload: { "action": decision } // decision expects 'approve' or 'reject'
+    // Action: On success, remove or update that item in driversData state queue local filter block
+    console.log(`Submitting admin verification choice: [${decision.toUpperCase()}] for driver ID: ${driverId}`)
+  }
+
+  // Interactive document viewer click handler
+  const viewDocumentFile = (doc) => {
+    if (!doc.url) {
+      alert("Document file link not discovered on server database records.")
+      return
+    }
+    // 💡 BACKEND TODO: If your team chooses to use secure AWS S3 pre-signed links, 
+    // fetch the fresh link via a GET request first before invoking window.open
+    window.open(doc.url, '_blank', 'noopener,noreferrer')
+  }
 
   const getStatusStyle = (status) => {
     if (status === 'IN REVIEW') {
@@ -72,57 +189,62 @@ export default function DriverVerificationScreen() {
       
       {/* LEFT COLUMN: SUBMISSIONS LIST TABLE CONTAINER */}
       <div style={dvStyles.leftTableContainer}>
-        <h3 style={dvStyles.sectionTitle}>Pending Submissions</h3>
-        <table style={dvStyles.table}>
-          <thead>
-            <tr>
-              <th style={{ ...dvStyles.th, textAlign: 'left', paddingLeft: '24px' }}>DRIVER NAME</th>
-              <th style={{ ...dvStyles.th, textAlign: 'left' }}>VEHICLE TYPE</th>
-              <th style={{ ...dvStyles.th, textAlign: 'left' }}>SUBMISSION DATE</th>
-              <th style={{ ...dvStyles.th, textAlign: 'center', paddingRight: '24px' }}>STATUS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {driversData.map((drv) => {
-              const isSelected = selectedDriver.id === drv.id
-              return (
-                <tr 
-                  key={drv.id} 
-                  style={{ 
-                    ...dvStyles.tableRow, 
-                    backgroundColor: isSelected ? '#F8FAFC' : 'transparent',
-                    borderLeft: isSelected ? '4px solid #1E3A8A' : '4px solid transparent'
-                  }}
-                  onClick={() => setSelectedDriver(drv)}
-                >
-                  <td style={{ ...dvStyles.tdNameCell, paddingLeft: isSelected ? '20px' : '24px' }}>
-                    {drv.image ? (
-                      <img src={drv.image} alt={drv.name} style={dvStyles.tableAvatarImg} />
-                    ) : (
-                      <div style={dvStyles.tableAvatarMock}>{drv.initials}</div>
-                    )}
-                    <div style={dvStyles.nameBlock}>
-                      <span style={dvStyles.driverNameText}>{drv.name}</span>
-                      <span style={dvStyles.driverEmailText}>{drv.email}</span>
-                    </div>
-                  </td>
-                  <td style={dvStyles.tdDataText}>
-                    <span style={{ fontWeight: 600, color: '#0F172A' }}>{drv.vehicle}</span>
-                  </td>
-                  <td style={dvStyles.tdDataText}>{drv.date}</td>
-                  <td style={{ ...dvStyles.tdDataText, textAlign: 'center', paddingRight: '24px' }}>
-                    <span style={{ ...dvStyles.statusBadge, ...getStatusStyle(drv.status) }}>
-                      {drv.status}
-                    </span>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+        <div style={dvStyles.tableHeaderSegment}>
+          <h3 style={dvStyles.sectionTitle}>Pending Submissions</h3>
+        </div>
+        
+        <div style={dvStyles.tableScrollWrapper}>
+          <table style={dvStyles.table}>
+            <thead>
+              <tr>
+                <th style={{ ...dvStyles.th, textAlign: 'left', paddingLeft: '24px' }}>DRIVER NAME</th>
+                <th style={{ ...dvStyles.th, textAlign: 'left' }}>VEHICLE TYPE</th>
+                <th style={{ ...dvStyles.th, textAlign: 'left' }}>SUBMISSION DATE</th>
+                <th style={{ ...dvStyles.th, textAlign: 'center', paddingRight: '24px' }}>STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {driversData.map((drv) => {
+                const isSelected = selectedDriver.id === drv.id
+                return (
+                  <tr 
+                    key={drv.id} 
+                    style={{ 
+                      ...dvStyles.tableRow, 
+                      backgroundColor: isSelected ? '#F8FAFC' : 'transparent',
+                      borderLeft: isSelected ? '4px solid #1E3A8A' : '4px solid transparent'
+                    }}
+                    onClick={() => setSelectedDriver(drv)}
+                  >
+                    <td style={{ ...dvStyles.tdNameCell, paddingLeft: isSelected ? '20px' : '24px' }}>
+                      {drv.image ? (
+                        <img src={drv.image} alt={drv.name} style={dvStyles.tableAvatarImg} />
+                      ) : (
+                        <div style={dvStyles.tableAvatarMock}>{drv.initials}</div>
+                      )}
+                      <div style={dvStyles.nameBlock}>
+                        <span style={dvStyles.driverNameText}>{drv.name}</span>
+                        <span style={dvStyles.driverEmailText}>{drv.email}</span>
+                      </div>
+                    </td>
+                    <td style={dvStyles.tdDataText}>
+                      <span style={{ fontWeight: 600, color: '#0F172A' }}>{drv.vehicle}</span>
+                    </td>
+                    <td style={dvStyles.tdDataText}>{drv.date}</td>
+                    <td style={{ ...dvStyles.tdDataText, textAlign: 'center', paddingRight: '24px' }}>
+                      <span style={{ ...dvStyles.statusBadge, ...getStatusStyle(drv.status) }}>
+                        {drv.status}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
         
         <div style={dvStyles.tableFooterPaginationRow}>
-          <div style={dvStyles.tableFooterCount}>Showing 3 of 12 pending requests</div>
+          <div style={dvStyles.tableFooterCount}>Showing 7 of 16 pending requests</div>
           <div style={dvStyles.paginationButtonCluster}>
             <button style={dvStyles.paginationArrowButton} aria-label="Previous page">
               <ChevronLeft size={14} strokeWidth={2.5} color="#64748B" />
@@ -143,7 +265,6 @@ export default function DriverVerificationScreen() {
             <div style={dvStyles.panelAvatarMock}>{selectedDriver.initials}</div>
           )}
           <h2 style={dvStyles.panelProfileName}>{selectedDriver.name}</h2>
-          <p style={dvStyles.panelProfileSub}>{selectedDriver.type}</p>
         </div>
 
         <div style={dvStyles.metaSegment}>
@@ -165,7 +286,7 @@ export default function DriverVerificationScreen() {
                 <span style={dvStyles.vehicleSubText}>{selectedDriver.color} • License: {selectedDriver.license}</span>
               </div>
             </div>
-            <div style={{ ...dvStyles.vehicleColorBlock, backgroundColor: selectedDriver.color === 'Blue' ? '#2563EB' : '#475569' }} />
+            <div style={{ ...dvStyles.vehicleColorBlock, backgroundColor: selectedDriver.color === 'Blue' ? '#2563EB' : selectedDriver.color === 'Black' ? '#0F172A' : selectedDriver.color === 'Red' ? '#DC2626' : '#475569' }} />
           </div>
         </div>
 
@@ -173,28 +294,58 @@ export default function DriverVerificationScreen() {
         <div style={dvStyles.metaSegment}>
           <h4 style={dvStyles.metaSegmentTitle}>VERIFICATION DOCUMENTS</h4>
           <div style={dvStyles.docsMatrixGrid}>
-            {selectedDriver.documents.map((docName, idx) => (
-              <div key={idx} style={dvStyles.docWrapper}>
+            {selectedDriver.documents.map((doc, idx) => (
+              <button 
+                key={idx} 
+                style={dvStyles.docWrapperButton} 
+                onClick={() => viewDocumentFile(doc)}
+                title={`Click to view ${doc.name} PDF`}
+              >
                 <div style={dvStyles.docPlaceholderMock}>
-                  {docName.toUpperCase()}
+                  {doc.name.toUpperCase()}
                 </div>
-                <span style={dvStyles.docLabelText}>{docName}</span>
-              </div>
+                <span style={dvStyles.docLabelText}>{doc.name}</span>
+              </button>
             ))}
           </div>
         </div>
 
         <div style={dvStyles.actionToolbar}>
-          <button style={dvStyles.rejectButton}>Reject Application</button>
-          <button style={dvStyles.approveButton}>Approve Driver</button>
+          <button style={dvStyles.rejectButton} onClick={() => handleApplicationStatus(selectedDriver.id, 'reject')}>Reject Application</button>
+          <button style={dvStyles.approveButton} onClick={() => handleApplicationStatus(selectedDriver.id, 'approve')}>Approve Driver</button>
         </div>
       </div>
     </div>
   )
 }
 
-// FORMATTED CSS STYLE CONTEXT MAP
+// MASTER CSS STYLESHEET
 const dvStyles = {
+  workspace: {
+    display: 'flex',
+    gap: '32px',
+    width: '100%',
+    boxSizing: 'border-box',
+    alignItems: 'stretch'
+  },
+  leftTableContainer: {
+    backgroundColor: '#ffffff',
+    borderRadius: '16px',
+    border: '1px solid #E2E8F0',
+    padding: '24px 0',
+    flex: 3,
+    boxShadow: '0 1px 3px rgba(0,0,0,0.01)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+  tableHeaderSegment: {
+    flexShrink: 0
+  },
+  tableScrollWrapper: {
+    flexGrow: 1,
+    overflowY: 'auto'
+  },
   actionToolbar: {
     display: 'flex',
     gap: '12px',
@@ -217,7 +368,7 @@ const dvStyles = {
     fontWeight: 600,
     color: '#475569',
     textAlign: 'center',
-    marginTop: '4px'
+    marginTop: '6px'
   },
   docPlaceholderMock: {
     height: '76px',
@@ -233,7 +384,9 @@ const dvStyles = {
     letterSpacing: '0.5px',
     border: '1px solid #1F2937',
     padding: '0 8px',
-    textAlign: 'center'
+    textAlign: 'center',
+    width: '100%',
+    boxSizing: 'border-box'
   },
   docsMatrixGrid: {
     display: 'grid',
@@ -242,9 +395,17 @@ const dvStyles = {
     width: '100%',
     boxSizing: 'border-box'
   },
-  docWrapper: {
+  docWrapperButton: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    background: 'none',
+    border: 'none',
+    padding: 0,
+    cursor: 'pointer',
+    width: '100%',
+    alignItems: 'stretch',
+    outline: 'none',
+    transition: 'transform 0.1s ease'
   },
   driverEmailText: {
     fontSize: '11px',
@@ -255,14 +416,6 @@ const dvStyles = {
     fontSize: '13px',
     fontWeight: 700,
     color: '#1E293B'
-  },
-  leftTableContainer: {
-    backgroundColor: '#ffffff',
-    borderRadius: '16px',
-    border: '1px solid #E2E8F0',
-    padding: '24px 0',
-    flex: 3,
-    boxShadow: '0 1px 3px rgba(0,0,0,0.01)'
   },
   metaCard: {
     border: '1px solid #F1F5F9',
@@ -430,7 +583,8 @@ const dvStyles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: '24px'
+    marginTop: '24px',
+    flexShrink: 0
   },
   tableRow: {
     borderBottom: '1px solid #F1F5F9',
@@ -491,12 +645,5 @@ const dvStyles = {
     fontSize: '13px',
     fontWeight: 700,
     color: '#1E293B'
-  },
-  workspace: {
-    display: 'flex',
-    gap: '32px',
-    width: '100%',
-    boxSizing: 'border-box',
-    alignItems: 'flex-start'
   }
 }

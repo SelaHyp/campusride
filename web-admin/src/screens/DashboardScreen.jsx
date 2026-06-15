@@ -1,31 +1,39 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Car, UserCheck, Users, ShieldCheck } from 'lucide-react'
 
 export default function DashboardScreen() {
-  // TODO: Fetch real-time metrics from GET /api/v1/admin/dashboard-stats
-  const stats = [
-    { label: 'Active Trips Now', value: '42', change: '+12%', icon: Car, color: '#1E3A8A', bg: '#F1F5F9', changeColor: '#15803D', changeBg: '#DCFCE7' },
+  // Operational Real-time Metrics State Framework
+  const [stats, setStats] = useState([
+    { label: 'Active Trips Now', value: '27', change: '+12%', icon: Car, color: '#1E3A8A', bg: '#F1F5F9', changeColor: '#15803D', changeBg: '#DCFCE7' },
     { label: 'Drivers Online', value: '128', change: '+5%', icon: UserCheck, color: '#1E3A8A', bg: '#F1F5F9', changeColor: '#15803D', changeBg: '#DCFCE7' },
     { label: 'Students Registered', value: '4,892', change: '+24%', icon: Users, color: '#1E3A8A', bg: '#F1F5F9', changeColor: '#15803D', changeBg: '#DCFCE7' },
-    { label: 'Pending Verification', value: '85', change: 'Action Req.', icon: ShieldCheck, color: '#991B1B', bg: '#FEE2E2', changeColor: '#991B1B', changeBg: '#FEE2E2' },
-  ]
+    { label: 'Pending Verification', value: '3', change: 'Action Req.', icon: ShieldCheck, color: '#991B1B', bg: '#FEE2E2', changeColor: '#991B1B', changeBg: '#FEE2E2' },
+  ])
 
-  // TODO: Fetch driver roster from GET /api/v1/admin/drivers/leaderboard
-  const topDrivers = [
-    { name: 'Adrian Morales', rating: '4.98', trips: 142, initials: 'AM' },
-    { name: 'Sarah Jenkins', rating: '4.95', trips: 138, initials: 'SJ' },
-    { name: 'Leo Chang', rating: '4.89', trips: 125, initials: 'LC' },
-  ]
+  // Driver Leaderboard State Framework
+  const [topDrivers, setTopDrivers] = useState([
+    { name: 'Kwame Evans Mensah', rating: '4.98', trips: 142, initials: 'KM' },
+    { name: 'Emmanuel Kofi Boateng', rating: '4.95', trips: 138, initials: 'EB' },
+    { name: 'Samuel Yaw Addo', rating: '4.89', trips: 125, initials: 'SA' },
+  ])
 
-  // TODO: Connect WebSockets to stream log array objects dynamically
-  const recentActivity = [
-    { title: 'New Student Signup', desc: 'Elena Rossi verified her email.', time: '2 MINS AGO', circleColor: '#3B82F6' },
-    { title: 'Trip Completed', desc: 'Driver #402 finished route 14B.', time: '15 MINS AGO', circleColor: '#22C55E' },
-    { title: 'Dispute Flagged', desc: 'Student A290 reported a delay.', time: '42 MINS AGO', circleColor: '#EF4444' },
-  ]
+  // Recent Activity Feed State Framework
+  const [recentActivity, setRecentActivity] = useState([
+    { title: 'New Student Signup', desc: 'Julian Vance verified his email route.', time: '2 MINS AGO', circleColor: '#3B82F6' },
+    { title: 'Trip Completed', desc: 'Emmanuel Kofi Boateng finished route Main Gate.', time: '15 MINS AGO', circleColor: '#22C55E' },
+    { title: 'Dispute Flagged', desc: 'Student user reported route 14B delay.', time: '42 MINS AGO', circleColor: '#EF4444' },
+  ])
 
-  // TODO: Fetch chart data array from GET /api/v1/admin/analytics/trip-volume
-  const chartData = [35, 45, 55, 90, 75, 30, 20]
+  // Weekly Analytic Volume State Framework
+  const [chartData, setChartData] = useState([35, 45, 55, 90, 75, 30, 20])
+
+  useEffect(() => {
+    // 💡 BACKEND TODO: 
+    // 1. Fetch live analytical metrics via HTTP GET to `/api/v1/admin/dashboard-stats`
+    // 2. Fetch driver leaderboard array via HTTP GET to `/api/v1/admin/drivers/leaderboard`
+    // 3. Fetch weekly analytic volumes array via HTTP GET to `/api/v1/admin/analytics/trip-volume`
+    // 4. Connect WebSockets/Socket.io to listen to channel `activity-log-stream` and append real-time objects to `recentActivity` state.
+  }, [])
 
   return (
     <div style={styles.container}>
@@ -36,17 +44,15 @@ export default function DashboardScreen() {
           const IconComponent = card.icon
           return (
             <div key={idx} style={styles.statCard}>
-              <div style={styles.cardHeader}>
-                <div style={{ ...styles.iconWrapper, backgroundColor: card.bg }}>
-                  <IconComponent size={16} strokeWidth={2.5} color={card.color} />
+              <div style={styles.statBodyBlock}>
+                <span style={styles.statLabelText}>{card.label}</span>
+                <div style={styles.statNumberGroup}>
+                  <span style={styles.statNumberText}>{card.value}</span>
+                  <span style={{ ...styles.statTrendText, color: card.changeColor }}>{card.change}</span>
                 </div>
-                <span style={{ ...styles.badge, color: card.changeColor, backgroundColor: card.changeBg }}>
-                  {card.change}
-                </span>
               </div>
-              <div style={styles.cardFooter}>
-                <p style={styles.cardLabel}>{card.label}</p>
-                <p style={styles.cardValue}>{card.value}</p>
+              <div style={{ ...styles.statIconBadge, backgroundColor: card.bg }}>
+                <IconComponent size={18} color={card.color} />
               </div>
             </div>
           )
@@ -60,11 +66,9 @@ export default function DashboardScreen() {
             <span style={styles.pingDot} /> LIVE CAMPUS ACTIVITY
           </div>
           
-          {/* TODO: Initialize MapboxGL/GoogleMaps component centered on Legon campus and stream live coordinate arrays */}
           <div style={styles.mapVisualFrame}>
             <div style={styles.mapGridLineHorizontal} />
             <div style={styles.mapGridLineVertical} />
-            
             <div style={{ ...styles.liveDriverNode, top: '35%', left: '25%', backgroundColor: '#22C55E' }} />
             <div style={{ ...styles.liveDriverNode, top: '60%', left: '70%', backgroundColor: '#2563EB' }} />
             <div style={{ ...styles.liveDriverNode, top: '20%', left: '55%', backgroundColor: '#EF4444' }} />
@@ -106,7 +110,6 @@ export default function DashboardScreen() {
 
       {/* 3. BOTTOM AREA: LEADERBOARD AND TRIP VOLUMES */}
       <div style={styles.bottomSection}>
-        {/* Top Drivers Table Card */}
         <div style={styles.tableCard}>
           <div style={styles.panelHeader}>
             <h3 style={styles.panelTitle}>Top Drivers This Week</h3>
@@ -135,7 +138,6 @@ export default function DashboardScreen() {
           </table>
         </div>
 
-        {/* Trip Volume Column Chart */}
         <div style={styles.chartCard}>
           <div style={styles.panelHeader}>
             <h3 style={styles.panelTitle}>Trip Volume</h3>
@@ -156,85 +158,75 @@ export default function DashboardScreen() {
   )
 }
 
-// ── CLEAN ARRANGED STYLE SHEET SHEET ─────────────────────────────────────────
+// ── ARRANGED MASTER STYLE SHEET SHEET WITH DOUBLE SPACE INDENTS ──────────────
 const styles = {
-  /* Layout Grid Controllers */
   container: {
     display: 'flex',
     flexDirection: 'column',
     gap: '24px',
     fontFamily: '"Inter", sans-serif',
     width: '100%',
-    boxSizing: 'border-box',
+    boxSizing: 'border-box'
   },
   metricsGrid: {
-    display: 'flex',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
     gap: '20px',
-    flexShrink: 0,
+    width: '100%'
   },
   middleSection: {
     display: 'flex',
     gap: '20px',
-    minHeight: '340px',
+    minHeight: '340px'
   },
   bottomSection: {
     display: 'flex',
     gap: '24px',
-    minHeight: '240px',
+    minHeight: '240px'
   },
-
-  /* Stat Metric Components */
   statCard: {
     backgroundColor: '#ffffff',
-    padding: '16px 20px',
     borderRadius: '16px',
     border: '1px solid #E2E8F0',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    height: '120px',
-    flex: 1,
-    boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
-  },
-  cardHeader: {
+    padding: '20px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    boxShadow: '0 1px 2px rgba(0,0,0,0.01)'
   },
-  iconWrapper: {
-    width: '32px',
-    height: '32px',
-    borderRadius: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badge: {
-    fontSize: '11px',
-    fontWeight: 700,
-    padding: '3px 8px',
-    borderRadius: '6px',
-  },
-  cardFooter: {
+  statBodyBlock: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '4px',
+    gap: '6px',
+    textAlign: 'left'
   },
-  cardLabel: {
+  statLabelText: {
     fontSize: '12px',
-    fontWeight: 700,
-    color: '#94A3B8',
-    margin: 0,
+    color: '#64748B',
+    fontWeight: 600
   },
-  cardValue: {
-    fontSize: '26px',
+  statNumberGroup: {
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: '8px'
+  },
+  statNumberText: {
+    fontSize: '24px',
     fontWeight: 800,
-    color: '#0F172A',
-    margin: 0,
-    letterSpacing: '-0.5px',
+    color: '#0F172A'
   },
-
-  /* Map Elements */
+  statTrendText: {
+    fontSize: '11px',
+    fontWeight: 700
+  },
+  statIconBadge: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '12px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   mapContainer: {
     backgroundColor: '#0B1329',
     borderRadius: '20px',
@@ -245,14 +237,14 @@ const styles = {
     flex: 2,
     position: 'relative',
     border: '1px solid #1E293B',
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   mapVisualFrame: {
     position: 'absolute',
     inset: 0,
     width: '100%',
     height: '100%',
-    pointerEvents: 'none',
+    pointerEvents: 'none'
   },
   mapGridLineHorizontal: {
     position: 'absolute',
@@ -260,7 +252,7 @@ const styles = {
     left: 0,
     width: '100%',
     height: '1px',
-    borderTop: '1px dashed rgba(30, 41, 59, 0.4)',
+    borderTop: '1px dashed rgba(30, 41, 59, 0.4)'
   },
   mapGridLineVertical: {
     position: 'absolute',
@@ -268,14 +260,14 @@ const styles = {
     top: 0,
     width: '1px',
     height: '100%',
-    borderLeft: '1px dashed rgba(30, 41, 59, 0.4)',
+    borderLeft: '1px dashed rgba(30, 41, 59, 0.4)'
   },
   liveDriverNode: {
     position: 'absolute',
     width: '8px',
     height: '8px',
     borderRadius: '50%',
-    boxShadow: '0 0 12px currentColor',
+    boxShadow: '0 0 12px currentColor'
   },
   liveLabel: {
     backgroundColor: 'rgba(15, 23, 42, 0.75)',
@@ -289,20 +281,13 @@ const styles = {
     alignItems: 'center',
     gap: '8px',
     width: 'max-content',
-    zIndex: 2,
+    zIndex: 2
   },
   pingDot: {
     width: '6px',
     height: '6px',
     backgroundColor: '#22C55E',
-    borderRadius: '50%',
-  },
-  mapPlaceholderText: {
-    color: '#242F41',
-    textAlign: 'center',
-    fontSize: '12px',
-    fontFamily: 'monospace',
-    margin: '30px 0',
+    borderRadius: '50%'
   },
   mapLegendBox: {
     backgroundColor: 'rgba(11, 19, 41, 0.95)',
@@ -314,7 +299,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '6px',
-    zIndex: 2,
+    zIndex: 2
   },
   legendItem: {
     fontSize: '11px',
@@ -322,15 +307,13 @@ const styles = {
     fontWeight: 600,
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
+    gap: '8px'
   },
   dot: {
     width: '6px',
     height: '6px',
-    borderRadius: '50%',
+    borderRadius: '50%'
   },
-
-  /* Activity Feed Components */
   activityPanel: {
     backgroundColor: '#ffffff',
     border: '1px solid #E2E8F0',
@@ -339,13 +322,13 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     flex: 1,
-    boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
   },
   panelHeader: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '16px',
+    marginBottom: '16px'
   },
   panelTitle: {
     fontSize: '13px',
@@ -353,65 +336,63 @@ const styles = {
     color: '#1E3A8A',
     margin: 0,
     textTransform: 'uppercase',
-    letterSpacing: '0.3px',
+    letterSpacing: '0.3px'
   },
   viewAllBtn: {
     fontSize: '11px',
     fontWeight: 700,
     color: '#2563EB',
-    cursor: 'pointer',
+    cursor: 'pointer'
   },
   activityList: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '16px',
+    gap: '16px'
   },
   activityItem: {
     display: 'flex',
     gap: '12px',
     alignItems: 'flex-start',
-    textAlign: 'left',
+    textAlign: 'left'
   },
   statusDot: {
     width: '6px',
     height: '6px',
     borderRadius: '50%',
     marginTop: '6px',
-    flexShrink: 0,
+    flexShrink: 0
   },
   itemContentBlock: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
     gap: '2px',
-    width: '100%',
+    width: '100%'
   },
   itemTitle: {
     fontSize: '13px',
     fontWeight: 700,
     color: '#1E293B',
-    margin: 0,
+    margin: 0
   },
   itemTime: {
     fontSize: '10px',
     fontWeight: 700,
-    color: '#94A3B8',
+    color: '#94A3B8'
   },
   itemDesc: {
     fontSize: '12px',
     color: '#64748B',
     margin: '2px 0 0 0',
-    lineHeight: '1.4',
+    lineHeight: '1.4'
   },
-
-  /* Leaderboard Table Components */
   tableCard: {
     backgroundColor: '#ffffff',
     border: '1px solid #E2E8F0',
     borderRadius: '20px',
     padding: '20px',
     flex: 3,
-    boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
   },
   weekBadge: {
     fontSize: '10px',
@@ -419,11 +400,11 @@ const styles = {
     backgroundColor: '#F1F5F9',
     color: '#64748B',
     padding: '3px 8px',
-    borderRadius: '6px',
+    borderRadius: '6px'
   },
   table: {
     width: '100%',
-    borderCollapse: 'collapse',
+    borderCollapse: 'collapse'
   },
   th: {
     paddingBottom: '12px',
@@ -431,35 +412,30 @@ const styles = {
     fontWeight: 700,
     color: '#94A3B8',
     borderBottom: '1px solid #F1F5F9',
-    letterSpacing: '0.5px',
+    letterSpacing: '0.5px'
   },
   tableRow: {
-    borderBottom: '1px solid #F1F5F9',
-  },
-  td: {
-    padding: '12px 0',
-    fontSize: '13px',
-    color: '#334155',
+    borderBottom: '1px solid #F1F5F9'
   },
   tdNameCell: {
     padding: '12px 0',
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
+    gap: '12px'
   },
   tdRatingCell: {
     padding: '12px 0',
     color: '#1E3A8A',
     fontWeight: '700',
     textAlign: 'center',
-    fontSize: '13px',
+    fontSize: '13px'
   },
   tdTripsCell: {
     padding: '12px 0',
     fontWeight: '800',
     textAlign: 'right',
     color: '#1E293B',
-    fontSize: '13px',
+    fontSize: '13px'
   },
   tableAvatarMock: {
     width: '28px',
@@ -472,15 +448,13 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    border: '1px solid #E2E8F0',
+    border: '1px solid #E2E8F0'
   },
   driverNameText: {
     fontSize: '13px',
     fontWeight: 700,
-    color: '#1E293B',
+    color: '#1E293B'
   },
-
-  /* Chart Volume Components */
   chartCard: {
     backgroundColor: '#ffffff',
     border: '1px solid #E2E8F0',
@@ -490,14 +464,14 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'space-between',
     flex: 2,
-    boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
   },
   chartTrack: {
     height: '140px',
     display: 'flex',
     alignItems: 'flex-end',
     gap: '12px',
-    paddingTop: '12px',
+    paddingTop: '12px'
   },
   chartColumnWrapper: {
     flex: 1,
@@ -506,15 +480,15 @@ const styles = {
     alignItems: 'center',
     gap: '6px',
     height: '100%',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-end'
   },
   barColumn: {
     width: '100%',
-    borderRadius: '4px 4px 0 0',
+    borderRadius: '4px 4px 0 0'
   },
   barLabel: {
     fontSize: '10px',
     fontWeight: 700,
-    color: '#94A3B8',
-  },
+    color: '#94A3B8'
+  }
 }
