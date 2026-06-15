@@ -3,13 +3,14 @@ import Sidebar from './components/Sidebar'
 import DashboardScreen from './screens/DashboardScreen'
 import DriverVerificationScreen from './screens/VerificationScreen'
 import TripsMonitoringScreen from './screens/TripsMonitoringScreen'
+import StudentsManagementScreen from './screens/UserDirectoryScreen'
 import { Search, Bell } from 'lucide-react'
 
 export default function App() {
   const [activePage, setActivePage] = useState('dashboard')
   const [currentDateTime, setCurrentDateTime] = useState('')
 
-  // 🌟 Dynamic Real-Time Status Clock Update Loop
+  // Dynamic Real-Time Status Clock Update Loop
   useEffect(() => {
     const updateSystemClock = () => {
       const now = new Date()
@@ -20,7 +21,7 @@ export default function App() {
     }
 
     updateSystemClock()
-    const timerInterval = setInterval(updateSystemClock, 60000) // Re-render minute intervals
+    const timerInterval = setInterval(updateSystemClock, 60000)
     return () => clearInterval(timerInterval)
   }, [])
 
@@ -28,7 +29,6 @@ export default function App() {
     // 💡 BACKEND TODO:
     // 1. Initialize master session admin verification checks (`GET /api/v1/auth/verify-session`)
     // 2. Wrap global context state properties here if distributing auth tokens downwards to children.
-    // 3. Connect multi-channel global WebSocket broadcast for system notifications on the top header Bell button handler.
   }, [])
 
   return (
@@ -45,11 +45,13 @@ export default function App() {
                 ? 'Dashboard' 
                 : activePage === 'trips' 
                 ? 'Trips Monitoring' 
+                : activePage === 'user-directory'
+                ? 'User Directory' // 🌟 Matches the updated layout mapping flawlessly
                 : activePage.replace('-', ' ')}
             </h2>
             <div style={appStyles.searchBar}>
               <Search size={14} strokeWidth={2.5} color="#94A3B8" />
-              <input type="text" placeholder="Search trips, drivers..." style={appStyles.searchInput} />
+              <input type="text" placeholder="Search trips, drivers, users..." style={appStyles.searchInput} />
             </div>
           </div>
           
@@ -69,9 +71,10 @@ export default function App() {
           {activePage === 'dashboard' && <DashboardScreen />}
           {activePage === 'driver-verification' && <DriverVerificationScreen />}
           {activePage === 'trips' && <TripsMonitoringScreen />}
+          {activePage === 'user-directory' && <StudentsManagementScreen />} {/* 🌟 Synced active key loop rendering */}
           
           {/* FALLBACK SHELL PREVENTS PAGE COMPILING BLANKS */}
-          {!['dashboard', 'driver-verification', 'trips'].includes(activePage) && (
+          {!['dashboard', 'driver-verification', 'trips', 'user-directory'].includes(activePage) && (
             <div style={appStyles.fallbackBox}>
               <h3 style={appStyles.fallbackTitle}>{activePage.replace('-', ' ')} Shell</h3>
               <p style={appStyles.fallbackDesc}>Global inline framework operating successfully.</p>

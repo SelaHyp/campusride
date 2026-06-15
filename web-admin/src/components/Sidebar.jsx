@@ -13,7 +13,7 @@ const NAV_ITEMS = [
   { id: 'dashboard',           label: 'Dashboard',           icon: LayoutDashboard },
   { id: 'trips',               label: 'Trips',               icon: Car },
   { id: 'driver-verification', label: 'Driver Verification', icon: ShieldCheck },
-  { id: 'students',            label: 'Students',            icon: Users },
+  { id: 'user-directory',      label: 'User Directory',      icon: Users }, // 🌟 Updated ID key to match new polymorphism architecture
   { id: 'analytics',           label: 'Analytics',           icon: BarChart3 },
   { id: 'notifications',       label: 'Notifications',       icon: Bell },
   { id: 'settings',            label: 'Settings',            icon: Settings },
@@ -21,7 +21,6 @@ const NAV_ITEMS = [
 
 const Sidebar = ({ activePage = 'dashboard', onNavigate }) => {
   const [hoveredItemId, setHoveredItemId] = useState(null)
-  // 🌟 Added state tracking for the footer profile button hover effect
   const [isProfileHovered, setIsProfileHovered] = useState(false)
 
   return (
@@ -79,8 +78,8 @@ const Sidebar = ({ activePage = 'dashboard', onNavigate }) => {
         })}
       </nav>
 
-      {/* 🌟 USER PROFILE REDIRECT BUTTON ASSEMBLY */}
-      {/* TODO: Authenticated Admin Session - Fetch active session profile image or metadata dynamically here */}
+      {/* USER PROFILE SECTION */}
+      {/* 💡 BACKEND TODO: Authenticated Admin Session - Fetch active admin credentials to dynamically render profile details */}
       <button 
         style={{ 
           ...styles.adminSectionButton,
@@ -100,9 +99,8 @@ const Sidebar = ({ activePage = 'dashboard', onNavigate }) => {
   )
 }
 
-// ── CLEAN ARRANGED STYLE SHEET SHEET ─────────────────────────────────────────
+// ── ARRANGED CSS STYLESHEET MAP OBJECT WITH CLEAN INDENTS ────────────────────
 const styles = {
-  /* Main Panel Container Frame Layout */
   sidebar: { 
     width: 240, 
     minHeight: '100vh', 
@@ -112,8 +110,6 @@ const styles = {
     flexDirection: 'column', 
     flexShrink: 0 
   },
-  
-  /* Logo Text Branding Block Content */
   brand: { 
     padding: '24px 24px 16px', 
     display: 'flex', 
@@ -134,8 +130,6 @@ const styles = {
     letterSpacing: '1.5px', 
     fontFamily: 'Inter, sans-serif' 
   },
-  
-  /* Nav Anchors and Links Buttons Layout */
   nav: { 
     flex: 1, 
     display: 'flex', 
@@ -167,8 +161,6 @@ const styles = {
   uiTransition: {
     transition: 'color 0.15s ease'
   },
-  
-  /* 🌟 Interactive Footer Profile Button Component styles */
   adminSectionButton: { 
     padding: '16px 20px', 
     borderTop: '1px solid #F1F5F9', 
